@@ -1,7 +1,11 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
-WORKDIR /app
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install build dependencies
+RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
@@ -16,9 +20,13 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine
+FROM node:22-alpine
 
-WORKDIR /app
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install production dependencies
+RUN apk add --no-cache tini
 
 # Copy package files
 COPY package*.json ./
@@ -27,10 +35,22 @@ COPY package*.json ./
 RUN npm install --production --legacy-peer-deps --force
 
 # Copy built files from builder stage
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Create necessary directories
+RUN mkdir -p logs uploads
+
+# Set proper permissions
+RUN chown -R node:node /usr/src/app
+
+# Switch to non-root user
+USER node
 
 # Expose the port your app runs on
 EXPOSE 3000
+
+# Use tini as init system
+ENTRYPOINT ["/sbin/tini", "--"]
 
 # Start the application
 CMD ["npm", "run", "start:prod"] 

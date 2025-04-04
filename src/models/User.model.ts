@@ -17,8 +17,8 @@ export interface IUser extends Document {
   generateRefreshToken(): string;
   otp: string;
   otpExpiry: number;
-  setPassword(password: string): Promise<void>; // Corrected this line
-  isGospel:boolean
+  setPassword(password: string): Promise<void>;
+  isGospel: boolean;
 }
 
 
@@ -33,6 +33,7 @@ const UserSchema: Schema = new Schema({
   refreshTokenExpiry: { type: Date, required: false },
   otp: { type: String, required: false },  // OTP field
   otpExpiry: { type: Number, required: false },
+  isGospel: { type: Boolean, default: false }
 }, {
   timestamps: true
 });
@@ -53,6 +54,12 @@ UserSchema.pre<IUser>('save', async function (next) {
 // Compare passwords
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Set password method
+UserSchema.methods.setPassword = async function (password: string): Promise<void> {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(password, salt);
 };
 
 // Generate access token
@@ -84,9 +91,5 @@ UserSchema.methods.generateRefreshToken = function (): string {
     expiresIn: process.env.NODE_ENV === 'production' ? process.env.REFRESH_TOKEN_EXPIRES : '7d'
   });
 };
-
-// UserSchema.methods.setPassword = async function (password: string): Promise<void> {
-//   this.password = await bcrypt.hash(password, 10);
-// };
 
 export default mongoose.model<IUser>('User', UserSchema);
