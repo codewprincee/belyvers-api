@@ -4,8 +4,6 @@ buildCommand = "rm -rf package-lock.json node_modules && npm install --legacy-pe
 
 [deploy]
 startCommand = "npm run start:prod"
-healthcheckPath = "/"
-healthcheckTimeout = 100
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
