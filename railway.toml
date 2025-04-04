@@ -3,9 +3,9 @@ builder = "nixpacks"
 buildCommand = "rm -rf package-lock.json node_modules && npm install --legacy-peer-deps --force && npm run clean && npm run build"
 
 [deploy]
-startCommand = "npm run start:prod"
+startCommand = "npm run start:dev"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
 [deploy.env]
-NODE_ENV = "production" 
+NODE_ENV = "development" 
