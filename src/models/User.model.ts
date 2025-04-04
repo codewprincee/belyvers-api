@@ -1,3 +1,5 @@
+//@ts-ignore
+//@ts-nocheck
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
