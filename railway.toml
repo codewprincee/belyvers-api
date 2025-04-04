@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "rm -rf package-lock.json && npm run clean && npm install --legacy-peer-deps && npm run build"
+buildCommand = "rm -rf package-lock.json node_modules && npm install --legacy-peer-deps --force && npm run clean && npm run build"
 
 [deploy]
 startCommand = "npm run start:prod"
