@@ -53,7 +53,7 @@ EXPOSE 3000
 ENTRYPOINT ["/sbin/tini", "--"]
 
 # Start the application
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:dev"]
 
 # Development stage
 FROM node:22-alpine
@@ -86,4 +86,4 @@ USER node
 EXPOSE 3000
 
 # Start the application in development mode
-CMD ["npm", "run", "dev"] 
+CMD ["npm", "run", "start:dev"] 
