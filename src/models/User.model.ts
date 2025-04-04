@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { Role, Roles } from '../constant';  // Import from the new constant file
 
 export interface IUser extends Document {
@@ -69,12 +69,17 @@ UserSchema.methods.generateAccessToken = function (): string {
     email: this.email,
     name: this.name,
     churchID: this.churchID,
-    roles: this.roles, // Include roles in the payload
-    features: this.features, // Include features in the payload
+    roles: this.roles,
+    features: this.features,
   };
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {
-    expiresIn: process.env.NODE_ENV === 'production' ? process.env.ACCESS_TOKEN_EXPIRES : '1d'
-  });
+
+  const options: SignOptions = {
+    expiresIn: process.env.NODE_ENV === 'production' 
+      ? (process.env.ACCESS_TOKEN_EXPIRES || '1d')
+      : '1d'
+  };
+
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, options);
 };
 
 // Generate refresh token
@@ -84,12 +89,17 @@ UserSchema.methods.generateRefreshToken = function (): string {
     email: this.email,
     name: this.name,
     churchID: this.churchID,
-    roles: this.roles, // Include roles in the payload
-    features: this.features, // Include features in the payload
+    roles: this.roles,
+    features: this.features,
   };
-  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string, {
-    expiresIn: process.env.NODE_ENV === 'production' ? process.env.REFRESH_TOKEN_EXPIRES : '7d'
-  });
+
+  const options: SignOptions = {
+    expiresIn: process.env.NODE_ENV === 'production'
+      ? (process.env.REFRESH_TOKEN_EXPIRES || '7d')
+      : '7d'
+  };
+
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string, options);
 };
 
 export default mongoose.model<IUser>('User', UserSchema);
