@@ -76,9 +76,7 @@ UserSchema.methods.generateAccessToken = function (): string {
   };
 
   const options: SignOptions = {
-    expiresIn: process.env.NODE_ENV === 'production' 
-      ? (process.env.ACCESS_TOKEN_EXPIRES || '1d')
-      : '1d'
+    expiresIn: '10d' as const
   };
 
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, options);
@@ -96,9 +94,7 @@ UserSchema.methods.generateRefreshToken = function (): string {
   };
 
   const options: SignOptions = {
-    expiresIn: process.env.NODE_ENV === 'production'
-      ? (process.env.REFRESH_TOKEN_EXPIRES || '7d')
-      : '7d'
+    expiresIn: '7d' as const
   };
 
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string, options);
