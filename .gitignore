@@ -1,0 +1,15 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+logs/
+
+# macOS system files
+.DS_Store
+api/src/.DS_Store
+
+# Logs
+*.log
+
+.vercel
